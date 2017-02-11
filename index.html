@@ -1,0 +1,74 @@
+<html>
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+    <button onclick="reset()">Reset</button>
+    <br />
+    Objects<input type="text" id="object_n" value="2" />
+    <br />
+    Categories<input type="text" id="cat_n" value="2" />
+    <br />
+    <button onclick="gen_cats()">Generate Categories</button>
+    <div id="cats">
+
+    </div>
+
+    <div id="table_holder" style="visibility:hidden;">
+        poo
+        <table id="table" border="1" cellpadding="5">
+
+        </table>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function gen_table() {
+            var object_count = $('#object_n').val();
+            var cat_count = $('#cat_n').val();
+            for (var i=0; i<=object_count; i++) {
+                $('#table').append('<tr>');
+                for (var j=0; j<=cat_count; j++) {
+                    // draw header row
+                    if (i==0) {
+                        if (j==0) { $('#table').append('<td></td>'); }
+                        else {
+                            //alert('cat')
+                            $('#table').append('<td>'+$('#cat'+(j-1)).val()+'</td>');
+                        }
+                    }
+                    // draw data row
+                    else {
+
+                    }
+                }
+                $('#table').append('</tr>');
+            }
+            $('#table_holder').css('visibility', 'visible');
+        }
+
+
+        function reset() {
+            $('#cats').empty();
+        }
+
+        function gen_cats() {
+            var object_count = $('#object_n').val();
+            var cat_count = $('#cat_n').val();
+            for (var i=0; i<cat_count; i++) {
+                $('#cats').append('Category');
+                $('#cats').append('<br />');
+                $('#cats').append('<input id="cat'+i+'" class="category" type="text" />');
+                $('#cats').append('<br />');
+                $('#cats').append('Values');
+                $('#cats').append('<br />');
+                $('#cats').append('<textarea id="vals'+i+'" class="values"></textarea>');
+                $('#cats').append('<br />');
+            }
+            $('#cats').append('<button onclick="gen_table()">Gen Table</button>');
+        }
+    </script>
+</body>
+</html>
