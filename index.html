@@ -1,39 +1,76 @@
 <html>
 <head>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        li {
+            list-style: none;
+        }
+        .row {
+            margin-top:30px !important;
+        }
+    </style>
 </head>
 
 <body>
-    <button onclick="reset()">Reset</button>
-    <br />
-    Objects<input type="text" id="object_n" value="2" />
-    <br />
-    Categories<input type="text" id="cat_n" value="2" />
-    <br />
-    <button onclick="gen_cats()">Generate Categories</button>
-    <div id="cats">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <button class="btn btn-danger" onclick="reset()">Reset</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="object_n">Objects</label>
+                        <input type="text" class="form-control" id="object_n" value="4" />
+                    </div>
+                    <div class="form-group">
+                        <label for="cat_n">Categories</label>
+                        <input type="text" class="form-control" id="cat_n" value="2" />
+                    </div>
+                  <button onclick="gen_cats()" id="gen_cats" class="btn btn-primary">Generate Categories</button>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 text-center" id="cats">
+                <!-- <div id="cats">
+
+                </div> -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3 text-center">
+                <div id="table_holder" style="visibility:hidden;">
+                    <table id="table" class="table table-bordered">
+
+                    </table>
+                </div>
+            </div>
+        </div>
 
     </div>
 
-    <div id="table_holder" style="visibility:hidden;">
-        poo
-        <table id="table" border="1" cellpadding="5">
 
-        </table>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/javascript">
         function gen_table() {
+            $('#gen_table').attr('disabled', 'disabled');
             var object_count = $('#object_n').val();
             var cat_count = $('#cat_n').val();
             for (var i=0; i<=object_count; i++) {
-                $('#table').append('<tr>');
+                $('#table').append('<tr id="r'+i+'">');
                 for (var j=0; j<=cat_count; j++) {
                     // draw header row
                     if (i==0) {
-                        if (j==0) { $('#table').append('<td></td>'); }
+                        if (j==0) { $('#table').append('<td>Objects</td>'); }
                         else {
                             //alert('cat')
                             $('#table').append('<td>'+$('#cat'+(j-1)).val()+'</td>');
@@ -41,33 +78,63 @@
                     }
                     // draw data row
                     else {
-
+                        if (j==0) { $('#table').append('<td><input type="text" /></td>'); }
+                        else {
+                            $('#table').append('<td><ul id="l'+i+''+j+'">');
+                            for (var k=0; k<object_count; k++) {
+                                $('#l'+i+''+j).append('<li>'+$('#cat'+(j-1)+'val'+k).val()+'</li>');
+                            }
+                            $('#table').append('</ul></td>');
+                        }
                     }
                 }
                 $('#table').append('</tr>');
             }
             $('#table_holder').css('visibility', 'visible');
+            bind_strike_item();
         }
 
+        function bind_strike_item() {
+            $('li').each(function() {
+                $(this).bind('click', function() {
+                    var isStiked = $(this).css('text-decoration');
+                    if (isStiked == 'none') {
+                        $(this).css('text-decoration', 'line-through');
+                    } else {
+                        $(this).css('text-decoration', 'none');
+                    }
+                })
+            });
+        }
 
         function reset() {
             $('#cats').empty();
+            $('#table').empty();
+            $('#gen_cats').removeAttr('disabled');
+            $('#gen_table').removeAttr('disabled');
         }
 
         function gen_cats() {
+            $('#gen_cats').attr('disabled', 'disabled');
             var object_count = $('#object_n').val();
             var cat_count = $('#cat_n').val();
             for (var i=0; i<cat_count; i++) {
-                $('#cats').append('Category');
-                $('#cats').append('<br />');
-                $('#cats').append('<input id="cat'+i+'" class="category" type="text" />');
-                $('#cats').append('<br />');
-                $('#cats').append('Values');
-                $('#cats').append('<br />');
-                $('#cats').append('<textarea id="vals'+i+'" class="values"></textarea>');
-                $('#cats').append('<br />');
+                if (cat_count==2) { $('#cats').append('<div class="col-lg-6" id="c'+i+'">'); }
+                if (cat_count==3) { $('#cats').append('<div class="col-lg-4" id="c'+i+'">'); }
+                if (cat_count==4) { $('#cats').append('<div class="col-lg-3" id="c'+i+'">'); }
+                $('#c'+i).append('Category');
+                $('#c'+i).append('<br />');
+                $('#c'+i).append('<input id="cat'+i+'" class="category form-control" style="max-width:200px; margin: 0 auto;" type="text" />');
+                $('#c'+i).append('<br />');
+                $('#c'+i).append('Values');
+                $('#c'+i).append('<br />');
+                for (var j=0; j<object_count; j++) {
+                    $('#c'+i).append('<input type="text" id="cat'+i+'val'+j+'" class="values form-control" style="max-width:200px; margin: 0 auto; display:inline;" />');
+                    $('#c'+i).append('<br />');
+                }
+                $('#cats').append('</div>');
             }
-            $('#cats').append('<button onclick="gen_table()">Gen Table</button>');
+            $('#cats').append('<button class="btn btn-primary" id="gen_table" onclick="gen_table()">Generate Table</button>');
         }
     </script>
 </body>
