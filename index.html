@@ -1,12 +1,21 @@
 <html>
 <head>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="src/sweetalert.css">
     <style>
         li {
             list-style: none;
+            width:100%;
+            cursor: pointer;
         }
         .row {
             margin-top:30px !important;
+        }
+        ul{
+            padding-left: 0px !important;
+        }
+        td {
+            vertical-align: middle !important;
         }
     </style>
 </head>
@@ -16,7 +25,7 @@
 
         <div class="row">
             <div class="col-lg-12 text-center">
-                <button class="btn btn-danger" onclick="reset()">Reset</button>
+                <button id="reset_button" class="btn btn-danger" disabled="disabled" onclick="reset()">Reset</button>
             </div>
         </div>
 
@@ -38,17 +47,17 @@
 
         <div class="row">
             <div class="col-lg-12 text-center" id="cats">
-                <!-- <div id="cats">
 
-                </div> -->
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-6 col-lg-offset-3 text-center">
                 <div id="table_holder" style="visibility:hidden;">
-                    <table id="table" class="table table-bordered">
+                    <table id="table" class="table table-striped text-center">
+                        <tbody id="tbody">
 
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -60,35 +69,37 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="src/sweetalert.min.js"></script>
     <script type="text/javascript">
         function gen_table() {
+            $('#cats').append('<button class="btn btn-danger" style="margin-left:10px !important;" id="reset_table" onclick="reset_table()">Reset Table</button>');
             $('#gen_table').attr('disabled', 'disabled');
             var object_count = $('#object_n').val();
             var cat_count = $('#cat_n').val();
             for (var i=0; i<=object_count; i++) {
-                $('#table').append('<tr id="r'+i+'">');
+                $('#tbody').append('<tr id="r'+i+'">');
                 for (var j=0; j<=cat_count; j++) {
                     // draw header row
                     if (i==0) {
-                        if (j==0) { $('#table').append('<td>Objects</td>'); }
+                        if (j==0) { $('#r'+i).append('<td>Objects</td>'); }
                         else {
                             //alert('cat')
-                            $('#table').append('<td>'+$('#cat'+(j-1)).val()+'</td>');
+                            $('#r'+i).append('<td>'+$('#cat'+(j-1)).val()+'</td>');
                         }
                     }
                     // draw data row
                     else {
-                        if (j==0) { $('#table').append('<td><input type="text" /></td>'); }
+                        if (j==0) { $('#r'+i).append('<td><input type="text" /></td>'); }
                         else {
-                            $('#table').append('<td><ul id="l'+i+''+j+'">');
+                            $('#r'+i).append('<td><ul id="l'+i+''+j+'">');
                             for (var k=0; k<object_count; k++) {
                                 $('#l'+i+''+j).append('<li>'+$('#cat'+(j-1)+'val'+k).val()+'</li>');
                             }
-                            $('#table').append('</ul></td>');
+                            $('#r'+i).append('</ul></td>');
                         }
                     }
                 }
-                $('#table').append('</tr>');
+                $('#tbody').append('</tr>');
             }
             $('#table_holder').css('visibility', 'visible');
             bind_strike_item();
@@ -100,21 +111,43 @@
                     var isStiked = $(this).css('text-decoration');
                     if (isStiked == 'none') {
                         $(this).css('text-decoration', 'line-through');
+                        $(this).css('color', '#9b9999');
                     } else {
                         $(this).css('text-decoration', 'none');
+                        $(this).css('color', 'black');
                     }
                 })
             });
         }
 
         function reset() {
-            $('#cats').empty();
-            $('#table').empty();
-            $('#gen_cats').removeAttr('disabled');
+            swal({
+              title: "Are you sure?",
+              text: "You will lose all configuration!",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "Yes, delete it!",
+              closeOnConfirm: false
+            },
+            function(){
+              swal("Cleared!", "Your configuration has been cleared.", "success");
+              $('#reset_button').attr('disabled', 'disabled');
+              $('#cats').empty();
+              $('#tbody').empty();
+              $('#gen_cats').removeAttr('disabled');
+              $('#gen_table').removeAttr('disabled');
+            });
+        }
+
+        function reset_table() {
+            $('#tbody').empty();
             $('#gen_table').removeAttr('disabled');
+            $('#reset_table').remove();
         }
 
         function gen_cats() {
+            $('#reset_button').removeAttr('disabled');
             $('#gen_cats').attr('disabled', 'disabled');
             var object_count = $('#object_n').val();
             var cat_count = $('#cat_n').val();
@@ -135,6 +168,7 @@
                 $('#cats').append('</div>');
             }
             $('#cats').append('<button class="btn btn-primary" id="gen_table" onclick="gen_table()">Generate Table</button>');
+
         }
     </script>
 </body>
